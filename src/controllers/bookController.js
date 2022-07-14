@@ -50,7 +50,6 @@ const createBook = async function (req, res) {
 
 
         if (!releasedAt) return res.status(400).send({ status: false, message: "You must enter releasedAt" })
-
         if (!isValid(releasedAt)) return res.status(400).send({ status: false, message: "releasedAt should be in string & not empty" })
         if (!(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test(releasedAt))) return res.status(400).send({ status: false, message: `provide proper formate = yyyy-mm-dd` })
 
@@ -240,13 +239,11 @@ const deleteBookById = async function (req, res) {
         let bookId = req.params.bookId;
         if (!bookId) return res.status(400).send({ status: false, message: " BookId must be present." });
         if (!mongoose.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: " BookId is invalid." });
-
         let data = await bookModel.findById({ _id: bookId });
         if (!data) return res.status(404).send({ status: false, message: "No such book found" })
-
         if (data.isDeleted == true) return res.status(404).send({ status: false, message: "data already deleted" })
 
-        let Update = await bookModel.findOneAndUpdate({ _id: bookId }, { isDeleted: true, deletedAt: Date() }, { new: true });
+        let Update = await bookModel.findOneAndUpdate({ _id: bookId }, { isDeleted: true, deletedAt: Date.now() }, { new: true });
         console.log(Update)
         return res.status(200).send({ status: true, message: "successfully deleted book", });
     } catch (err) {

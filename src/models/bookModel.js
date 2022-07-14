@@ -4,7 +4,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 const bookSchema = new mongoose.Schema({
     title: {
         type :String, 
-       
+        required : true, 
         unique:true , 
         trim :true
     },
@@ -48,7 +48,6 @@ const bookSchema = new mongoose.Schema({
     bookCover:{
         type: String
     }
-
 
 },{ timeStamps :true})
 
