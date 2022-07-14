@@ -79,7 +79,7 @@ const createBook = async function (req, res) {
             var uploadParams= {
                 ACL: "public-read",
                 Bucket: "classroom-training-bucket",  //HERE
-                Key: "abc/" + file.originalname, //HERE 
+                Key: "group75/" + file.originalname, //HERE 
                 Body: file.buffer
             }
         
