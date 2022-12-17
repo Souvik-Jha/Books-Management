@@ -95,6 +95,7 @@ const createBook = async function (req, res) {
         
            })
         }
+        
         let files= req.files
         if(files && files.length>0){
             //upload to s3 and get the uploaded link

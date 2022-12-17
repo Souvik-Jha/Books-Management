@@ -26,8 +26,8 @@ const createReview = async function (req, res) {
 
         let { review, reviewedBy, rating } = data
 
-        if (review == "") return res.status(400).send({ status: false, message: "review can't be empty" })
-        if (review) {
+        //if (review == "") return res.status(400).send({ status: false, message: "review can't be empty" })
+        if("review" in data){
             if (!isValid(review)) return res.status(400).send({ status: false, message: "enter valid review" })
         }
 
@@ -51,7 +51,7 @@ const createReview = async function (req, res) {
 
         let newReview = await reviewModel.create(reviewData)
 
-        let bookUpdate = await bookModel.findByIdAndUpdate({ _id: bookId }, { reviews: checkId.reviews + 1 }, { new: true })
+        let bookUpdate = await bookModel.findByIdAndUpdate({ _id: bookId },{$inc:{reviews:1} }, { new: true })
 
         let showData = { ...bookUpdate._doc, reviewsData: newReview }
         res.status(201).send({ status: true, message: "review created", data: showData })
@@ -73,6 +73,7 @@ const updateReview = async function (req, res) {
         if (!bookId) return res.status(400).send({ status: false, message: "please enter bookId" })
         if (!mongoose.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "provide valid bookId" })
         let checkId = await bookModel.findById({ _id: bookId })
+        console.log({...checkId})
         if (!checkId) return res.status(404).send({ status: false, message: "no such book" })
         if (checkId.isDeleted == true) return res.status(404).send({ status: false, message: "this book is deleted" })
 
@@ -118,6 +119,7 @@ const updateReview = async function (req, res) {
 
         res.status(200).send({ status: true, message: "updated review", data: { ...checkId._doc, reviewsData: updateDoc } })
     } catch (err) {
+        console.log(err)
         return res.status(500).send({ status: false, mag: err.message })
 
 
@@ -146,7 +148,7 @@ const deleteReview = async function (req, res) {
 
         let Update = await reviewModel.findOneAndUpdate({ _id: reviewId }, { isDeleted: true, deletedAt: Date.now() }, { new: true });
 
-        let bookUpdate = await bookModel.findByIdAndUpdate({ _id: bookId }, { reviews: checkId.reviews - 1 }, { new: true })
+        let bookUpdate = await bookModel.findByIdAndUpdate({ _id: bookId }, {$inc:{ reviews:- 1} }, { new: true })
         
         console.log({ ...bookUpdate._doc, reviewsData: Update })
 
